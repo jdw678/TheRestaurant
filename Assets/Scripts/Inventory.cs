@@ -111,6 +111,9 @@ public class Inventory : MonoBehaviour, IDisplayableStorer
 
     private void OnValidate()
     {
+
+        if(inventory == null) return;
+
         //get the new inventory size
         int size = columns * rows;
 
