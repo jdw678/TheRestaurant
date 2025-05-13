@@ -11,10 +11,15 @@ public class Player : MonoBehaviour
     [SerializeField] string playerName;
     [SerializeField, Range(1, 30)] float movementSpeed = 6;
     [SerializeField, Range(1, 30)] float sprintSpeed = 9;
+    [SerializeField, Range(1, 30)] float jumpSpeed = 10;
+    [SerializeField, Range(1, 100)] float jumpCooldownInMS = 20;
     [SerializeField, Range(.1f, 100f)] float sensitivity = 25;
     [SerializeField] Camera camera;
-    float cameraVerticleRotation = 0f;
+    [SerializeField] Rigidbody rb;
 
+    float cameraVerticleRotation = 0f;
+    [SerializeField] bool isJumping = false;
+    [SerializeField] bool isGrounded;
     private void Awake()
     {
         Inventory inventory;
@@ -28,11 +33,15 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        bool sprinting = Input.GetKey(KeyCode.LeftShift);
+        //only check once per update
+        bool isSprinting = IsSprinting();
+        isGrounded = IsGrounded();
+
         //movement inputs
         if(Input.GetKey(KeyCode.W))
         {
-            transform.position += transform.forward * (sprinting ? sprintSpeed : movementSpeed) * Time.deltaTime;
+            float speed = (isSprinting ? sprintSpeed : movementSpeed);
+            transform.position += transform.forward * speed * Time.deltaTime;
         }
         if (Input.GetKey(KeyCode.S))
         {
@@ -45,6 +54,22 @@ public class Player : MonoBehaviour
         if (Input.GetKey(KeyCode.D))
         {
             transform.position += transform.right * movementSpeed * Time.deltaTime;
+        }
+
+        //jump
+        if (Input.GetKey(KeyCode.Space))
+        {
+            //jump and set isJumping true to avoid multiple jumps
+            if (isGrounded && !isJumping)
+            {
+                isJumping = true;
+
+                rb.AddForce(Vector3.up * jumpSpeed * 10);
+
+                //set is jumping false after a certain amount of time
+                Invoke("ResetJump", jumpCooldownInMS / 1000);
+            }
+
         }
 
         //get mouse movement
@@ -60,4 +85,19 @@ public class Player : MonoBehaviour
         transform.Rotate(Vector3.up * inputX);
     }
 
+    bool IsGrounded()
+    {
+        Debug.DrawRay(transform.position + new Vector3(0, .1f, 0), -Vector3.up, Color.red, 20);
+        return Physics.Raycast(transform.position + new Vector3(0, .1f, 0), -Vector3.up, .2f);
+    }
+
+    bool IsSprinting()
+    {
+        return Input.GetKey(KeyCode.LeftShift);
+    }
+
+    void ResetJump()
+    {
+        isJumping = false;
+    }
 }
