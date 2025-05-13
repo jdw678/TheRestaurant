@@ -11,7 +11,7 @@ public class Player : MonoBehaviour
     [SerializeField] string playerName;
     [SerializeField, Range(1, 30)] float movementSpeed = 6;
     [SerializeField, Range(1, 30)] float sprintSpeed = 9;
-    [SerializeField, Range(1, 30)] float jumpSpeed = 10;
+    [SerializeField, Range(1, 30)] float jumpSpeed = 25;
     [SerializeField, Range(1, 100)] float jumpCooldownInMS = 20;
     [SerializeField, Range(.1f, 100f)] float sensitivity = 25;
     [SerializeField] Camera camera;
