@@ -11,88 +11,154 @@ public class Inventory : MonoBehaviour, IDisplayableStorer
     [SerializeField, Range(1, 20)] int columns;
     [SerializeField, Range(1, 20)] int rows;
 
-    Dictionary<IStorable, int> inventory;
-    HashSet<string> names;
+    IStorable[,] inventory;
+
+    [SerializeField] IDisplayable inventoryUI;
 
     private void Awake()
     {
-        inventory = new Dictionary<IStorable, int>(columns * rows);
-        names = new HashSet<string>(columns * rows);
+        inventory = new IStorable[columns, rows];
     }
 
-    public string[] GetAllItemNames()
-    {
-        return names.ToArray();
-    }
 
-    public int GetItemAmount(string name)
+    public float GetItemAmount(int column, int row)
     {
-        if (!names.Contains(name))
+        if (inventory[column, row] == null)
             return 0;
 
-        return inventory.First(x => x.Key.GetName().Equals(name)).Value;
+        return inventory[column, row].GetAmount();
     }
 
     public void ToggleDisplay(bool isDisplaying)
     {
-        throw new System.NotImplementedException();
+        inventoryUI.ToggleDisplay(isDisplaying);
     }
 
-    public void AddItem(IStorable item, int amount)
+    public void AddItem(IStorable item, float amount, int column, int row)
     {
-        //get the key in inventory to make certain we are modifying the correct data
-        IStorable entry = GetItem(item.GetName());
+        if (inventory[column, row] != null)
+            throw new System.Exception("There is already an item in this spot!");
 
-        //if it doesnt exist, add it
-        if (entry is null)
-        {
-            names.Add(item.GetName());
-            inventory.Add(item, amount);
-            return;
-        }
+        //make sure we have enough
+        if(amount > item.GetAmount())
+            amount = item.GetAmount();
 
-        //if exists, get the current amount and increment it
-        int currentAmount = inventory[entry];
-        inventory[entry] = amount + currentAmount;
+        //create the new item and set it
+        IStorable newItem = item.Clone();
+        newItem.SetAmount(amount);
+        inventory[column, row] = newItem;
+
+        //update the old item's amount
+        item.SetAmount(item.GetAmount() - amount);
+
+        //update the display
+        inventoryUI.UpdateDsiplay();
     }
 
-    public IStorable GetItem(string name)
+    public IStorable GetItem(int column, int row)
     {
-        //make certain it exists
-        if (!names.Contains(name))
-            return null;
 
-        //search for the first (and only) entry of the name in the inventory and return it
-        return inventory.First(x => x.Key.GetName().Equals(name)).Key;
+        return inventory[column, row];
     }
 
-    public void RemoveItem(IStorable item, int amount)
+    public void RemoveItem(int column, int row, float amount)
     {
-        //get the key in inventory to make certain we are modifying the correct data
-        IStorable entry = GetItem(item.GetName());
+        //get the item
+        IStorable entry = GetItem(column, row);
 
         //check item exists
         if (entry is null)
-            throw new System.Exception("That item is not in this inventory!");
+            throw new System.Exception($"There is no item stored at {column}, {row} in inventory {name}.");
 
         //check there is enough of the item to remove
-        int currentAmount = inventory[entry];
+        float currentAmount = entry.GetAmount();
         if (currentAmount < amount)
             throw new System.Exception("Not enough items in the inventory!\n" +
                 "Amount Requested: " + amount + "\n" +
                 "Amount Available: " + currentAmount);
 
-        //check if this removes the item from the inventory
-        if(currentAmount == amount)
+
+        //remove the requested amount
+        entry.SetAmount(currentAmount - amount);
+
+        //update the display
+        inventoryUI.UpdateDsiplay();
+    }
+
+    public int GetRows()
+    {
+        return rows;
+    }
+
+    public int GetColumns()
+    {
+        return columns;
+    }
+
+    void Resize()
+    {
+
+        //check to see if the inventory size is still the same or not
+        int oldColumns = inventory.GetLength(0);
+        int oldRows = inventory.GetLength(1);
+        if ( oldColumns == columns && oldRows == rows)
+            return;
+
+
+        //create a new inventory with the new size
+        IStorable[,] newInventory = new IStorable[columns, rows];
+
+        //get a Dictionary of all the items (item, count) to:
+        //  A) combine similar items, B) not double copy any items, and C) not miss any items
+        Dictionary<IStorable, float> itemsDic = new Dictionary<IStorable, float>(oldColumns * oldRows);
+
+        //add all the items to the dictionary
+        foreach(IStorable item in inventory)
         {
-            names.Remove(entry.GetName());
-            inventory.Remove(entry);
+            if (itemsDic.ContainsKey(item))
+                itemsDic[item] = itemsDic[item] + item.GetAmount();
+            else
+                itemsDic.Add(item, item.GetAmount());
         }
 
-        //by now it must be true that the inventory has more than enough items
-        //remove the requested amount
-        inventory[entry] = currentAmount - amount;
-        
+        IStorable[] items = itemsDic.Keys.ToArray();
+
+        //fill the new inventory
+        for (int x = 0; x < columns; x++)
+        {
+            if (x * rows >= items.Length)
+                break;
+
+            for (int y = 0; y < rows; y++)
+            {
+                if (x * rows + y >= items.Length)
+                    break;
+
+                newInventory[x, y] = items[x * rows + y];
+            }
+
+        }
+    }
+
+    void GetUI()
+    {
+
+        Component[] components = gameObject.GetComponentsInChildren<Component>();
+        foreach (Component component in components)
+        {
+            //skip inventory components
+            if (component is IDisplayableStorer)
+                continue;
+
+            if (component is IDisplayable)
+            {
+                inventoryUI = (IDisplayable)component;
+                return;
+            }
+        }
+
+        inventory = null;
+        Debug.LogError($"Game Object \"{name}\" has an Inventory component but is missing a component of type IDisplayable!");
     }
 
     public override string ToString()
@@ -101,9 +167,9 @@ public class Inventory : MonoBehaviour, IDisplayableStorer
             $"Inventory Columns: {columns}\n" + 
             $"Inventory Contents: \n";
 
-        foreach (KeyValuePair<IStorable, int> kvp in inventory)
+        foreach (IStorable item in inventory)
         {
-            str += $"\tName: {kvp.Key.GetName()}, Amount: {kvp.Value}\n";
+            str += $"\tItem: {item}, Amount: {item.GetAmount()}\n";
         }
 
         return str;
@@ -114,24 +180,7 @@ public class Inventory : MonoBehaviour, IDisplayableStorer
 
         if(inventory == null) return;
 
-        //get the new inventory size
-        int size = columns * rows;
-
-        //create a new inventory with the new size
-        Dictionary<IStorable, int> newInventory = new Dictionary<IStorable, int>(size);
-        names = new HashSet<string>(size);
-
-        //loop through the old inventory and add items to the new inventory, until the new inventory runs out of space
-        int i = 0;
-        foreach(var kvp in inventory)
-        {
-            if (i == size)
-                break;
-
-            newInventory[kvp.Key] = kvp.Value;
-
-            i++;
-        }
-
+        Resize();
+        GetUI();
     }
 }

@@ -9,5 +9,6 @@ namespace Assets.Scripts.Interfaces
     public interface IDisplayable
     {
         public void ToggleDisplay(bool isDisplaying);
+        public void UpdateDsiplay();
     }
 }

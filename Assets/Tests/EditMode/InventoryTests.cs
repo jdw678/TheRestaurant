@@ -14,7 +14,7 @@ public class InventoryTests
     public void AddItem()
     {
         //create a test item
-        StorableItem item = new StorableItem("Test item");
+        StorableItem item = new StorableItem("Test item", 5);
 
         //create an inventory
         GameObject gameObject = new GameObject();
@@ -22,12 +22,11 @@ public class InventoryTests
         Inventory inventory = gameObject.GetComponent<Inventory>();
 
         //add the test item
-        inventory.AddItem(item, 5);
+        inventory.AddItem(item, 5, 0, 0);
 
         //check the inventory state is correct
-        Assert.AreEqual(item, inventory.GetItem("Test item"));
-        Assert.AreEqual(5, inventory.GetItemAmount("Test item"));
-        Assert.AreEqual(1, inventory.GetAllItemNames().Length);
+        Assert.AreEqual(item, inventory.GetItem(0, 0));
+        Assert.AreEqual(5, inventory.GetItemAmount(0 , 0));
 
     }
 
@@ -35,7 +34,7 @@ public class InventoryTests
     public void RemoveItem()
     {
         //create a test item
-        StorableItem item = new StorableItem("Test item");
+        StorableItem item = new StorableItem("Test item", 5);
 
         //create an inventory
         GameObject gameObject = new GameObject();
@@ -43,22 +42,21 @@ public class InventoryTests
         Inventory inventory = gameObject.GetComponent<Inventory>();
 
         //add the test item
-        inventory.AddItem(item, 5);
+        inventory.AddItem(item, 5, 0, 0);
 
         //try to remove too many
-        Assert.That(() => inventory.RemoveItem(item, 50), Throws.TypeOf<Exception>());
+        Assert.That(() => inventory.RemoveItem(0, 0, 50), Throws.TypeOf<Exception>());
 
         //try to remove an item it doesn't have
-        Assert.That(() => inventory.RemoveItem(new StorableItem("Non existant"), 10), Throws.TypeOf<Exception>());
+        Assert.That(() => inventory.RemoveItem(1, 0, 10), Throws.TypeOf<Exception>());
 
         //remove less than the exact amount
-        inventory.RemoveItem(item, 1);
-        Assert.AreEqual(4, inventory.GetItemAmount(item.GetName()));
+        inventory.RemoveItem(0, 0, 1);
+        Assert.AreEqual(4, inventory.GetItemAmount(0, 0));
 
         //remove the exact amount left
-        inventory.RemoveItem(item, 4);
-        Assert.IsNull(inventory.GetItem(item.GetName()));
-        Assert.IsEmpty(inventory.GetAllItemNames());
+        inventory.RemoveItem(0, 0, 4);
+        Assert.IsNull(inventory.GetItem(0, 0));
 
     }
 }

@@ -8,6 +8,9 @@ namespace Assets.Scripts.Interfaces
 {
     public interface IStorable
     {
-        string GetName();
+        UnityEngine.UI.Image GetDisplayImage();
+        float GetAmount();
+        void SetAmount(float amount);
+        IStorable Clone();
     }
 }

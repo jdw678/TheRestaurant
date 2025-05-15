@@ -14,7 +14,7 @@ public class Player : MonoBehaviour
     [SerializeField, Range(1, 30)] float jumpSpeed = 25;
     [SerializeField, Range(1, 100)] float jumpCooldownInMS = 20;
     [SerializeField, Range(.1f, 100f)] float sensitivity = 25;
-    [SerializeField] Camera camera;
+    [SerializeField] Camera cam;
     [SerializeField] Rigidbody rb;
 
     float cameraVerticleRotation = 0f;
@@ -79,7 +79,7 @@ public class Player : MonoBehaviour
         //transform the camera up or down
         cameraVerticleRotation -= inputY;
         cameraVerticleRotation = Mathf.Clamp(cameraVerticleRotation, -90f, 90f);
-        camera.transform.localEulerAngles = Vector3.right * cameraVerticleRotation;
+        cam.transform.localEulerAngles = Vector3.right * cameraVerticleRotation;
 
         //rotate the player left or right
         transform.Rotate(Vector3.up * inputX);

@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Assets.Scripts.Interfaces
 {
-    public interface IDisplayableStorer : IDisplayable, IStorer
+    public interface IDisplayableStorer : IStorer
     {
+        public void ToggleDisplay(bool isDisplaying);
     }
 }

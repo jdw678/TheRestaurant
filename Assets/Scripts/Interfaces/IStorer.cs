@@ -8,10 +8,9 @@ namespace Assets.Scripts.Interfaces
 {
     public interface IStorer
     {
-        public void AddItem(IStorable item, int amount);
-        public void RemoveItem(IStorable item, int amount);
-        public IStorable GetItem(string name);
-        public int GetItemAmount(string name);
-        public string[] GetAllItemNames();
+        public void AddItem(IStorable item, float amount, int column, int row);
+        public void RemoveItem(int column, int row, float amount);
+        public IStorable GetItem(int column, int row);
+        public float GetItemAmount(int column, int row);
     }
 }
