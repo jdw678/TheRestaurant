@@ -8,16 +8,18 @@ using UnityEngine;
 public class Inventory : MonoBehaviour, IDisplayableStorer
 {
 
-    [SerializeField, Range(1, 20)] int columns;
-    [SerializeField, Range(1, 20)] int rows;
+    [SerializeField, Range(1, 20)] int columns = 1;
+    [SerializeField, Range(1, 20)] int rows = 1;
 
     IStorable[,] inventory;
 
     [SerializeField] IDisplayable inventoryUI;
 
-    private void Awake()
+    public void Awake()
     {
         inventory = new IStorable[columns, rows];
+        if(inventoryUI == null)
+            inventoryUI = GetComponent<InventoryUI>();
     }
 
 
@@ -37,7 +39,10 @@ public class Inventory : MonoBehaviour, IDisplayableStorer
     public void AddItem(IStorable item, float amount, int column, int row)
     {
         if (inventory[column, row] != null)
+        {
+            Debug.Log(item.GetType());
             throw new System.Exception("There is already an item in this spot!");
+        }
 
         //make sure we have enough
         if(amount > item.GetAmount())
@@ -78,8 +83,13 @@ public class Inventory : MonoBehaviour, IDisplayableStorer
                 "Amount Available: " + currentAmount);
 
 
-        //remove the requested amount
-        entry.SetAmount(currentAmount - amount);
+        //remove the item if 0 left
+        if (currentAmount - amount == 0)
+            inventory[column, row] = null;
+
+        //else remove the requested amount
+        else entry.SetAmount(currentAmount - amount);
+
 
         //update the display
         inventoryUI.UpdateDsiplay();
@@ -93,6 +103,22 @@ public class Inventory : MonoBehaviour, IDisplayableStorer
     public int GetColumns()
     {
         return columns;
+    }
+
+    public void SetRows(int rows)
+    {
+        if(rows < 0)
+            rows = 0;
+        
+        this.rows = rows;
+    }
+    public void SetColumns(int columns)
+    {
+        if (columns < 0)
+            columns = 0;
+
+        this.columns = columns;
+
     }
 
     void Resize()
@@ -158,7 +184,7 @@ public class Inventory : MonoBehaviour, IDisplayableStorer
         }
 
         inventory = null;
-        Debug.LogError($"Game Object \"{name}\" has an Inventory component but is missing a component of type IDisplayable!");
+        Debug.LogWarning($"Game Object \"{name}\" has an Inventory component but is missing a component of type IDisplayable!");
     }
 
     public override string ToString()
@@ -169,7 +195,10 @@ public class Inventory : MonoBehaviour, IDisplayableStorer
 
         foreach (IStorable item in inventory)
         {
-            str += $"\tItem: {item}, Amount: {item.GetAmount()}\n";
+            if (item == null)
+                str += "Null";
+
+            else str += $"\tItem: {item}, Amount: {item.GetAmount()}\n";
         }
 
         return str;

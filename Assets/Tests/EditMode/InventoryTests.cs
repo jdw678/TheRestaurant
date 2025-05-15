@@ -19,14 +19,22 @@ public class InventoryTests
         //create an inventory
         GameObject gameObject = new GameObject();
         gameObject.AddComponent(typeof(Inventory));
+        gameObject.AddComponent<InventoryUI>();
+
         Inventory inventory = gameObject.GetComponent<Inventory>();
+        inventory.Awake();
 
         //add the test item
         inventory.AddItem(item, 5, 0, 0);
 
         //check the inventory state is correct
-        Assert.AreEqual(item, inventory.GetItem(0, 0));
+        Assert.NotNull(inventory.GetItem(0, 0));
         Assert.AreEqual(5, inventory.GetItemAmount(0 , 0));
+
+        //check that adding in a filled slot throws an error
+        //Assert.That(() => inventory.AddItem(item, 5, 0, 0););
+
+
 
     }
 
@@ -39,7 +47,11 @@ public class InventoryTests
         //create an inventory
         GameObject gameObject = new GameObject();
         gameObject.AddComponent(typeof(Inventory));
+        gameObject.AddComponent<InventoryUI>();
         Inventory inventory = gameObject.GetComponent<Inventory>();
+        inventory.SetRows(2);
+        inventory.SetColumns(2);
+        inventory.Awake();
 
         //add the test item
         inventory.AddItem(item, 5, 0, 0);

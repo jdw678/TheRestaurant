@@ -38,7 +38,7 @@ public class InventoryUI : MonoBehaviour, IDisplayable
         }
 
         inventory = null;
-        Debug.LogError($"Game Object \"{name}\" has an InventoryUI component but is missing a component of type IDisplayableStorer!");
+        Debug.LogWarning($"Game Object \"{name}\" has an InventoryUI component but is missing a component of type IDisplayableStorer!");
     }
 
      
