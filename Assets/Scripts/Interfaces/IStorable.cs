@@ -12,5 +12,6 @@ namespace Assets.Scripts.Interfaces
         float GetAmount();
         void SetAmount(float amount);
         IStorable Clone();
+        string GetName();
     }
 }

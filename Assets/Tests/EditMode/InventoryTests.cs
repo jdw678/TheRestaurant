@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Assets.Scripts.Interfaces;
+using Assets.Tests.EditMode.TestClasses;
 using Assets.Tests.TestClasses;
 using NUnit.Framework;
 using UnityEngine;
@@ -15,13 +16,16 @@ public class InventoryTests
     {
         //create a test item
         StorableItem item = new StorableItem("Test item", 5);
+        StorableItem diffItem = new StorableItem("Test item 2", 5);
+        StorableItem sameItem = new StorableItem("Test item", 10);
 
         //create an inventory
         GameObject gameObject = new GameObject();
         gameObject.AddComponent(typeof(Inventory));
-        gameObject.AddComponent<InventoryUI>();
 
         Inventory inventory = gameObject.GetComponent<Inventory>();
+        inventory.SetUI(new EmptyDisplayable());
+
         inventory.Awake();
 
         //add the test item
@@ -32,8 +36,12 @@ public class InventoryTests
         Assert.AreEqual(5, inventory.GetItemAmount(0 , 0));
 
         //check that adding in a filled slot throws an error
-        //Assert.That(() => inventory.AddItem(item, 5, 0, 0););
+        Assert.That(() => inventory.AddItem(diffItem, 5, 0, 0), Throws.TypeOf<Exception>());
 
+        //check that you can add more of the same type of item
+        inventory.AddItem(sameItem, 10, 0, 0);
+
+        Assert.AreEqual(15, inventory.GetItem(0, 0).GetAmount());
 
 
     }
@@ -47,10 +55,13 @@ public class InventoryTests
         //create an inventory
         GameObject gameObject = new GameObject();
         gameObject.AddComponent(typeof(Inventory));
-        gameObject.AddComponent<InventoryUI>();
+
         Inventory inventory = gameObject.GetComponent<Inventory>();
+
         inventory.SetRows(2);
         inventory.SetColumns(2);
+        inventory.SetUI(new EmptyDisplayable());
+
         inventory.Awake();
 
         //add the test item

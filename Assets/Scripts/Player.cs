@@ -2,13 +2,18 @@ using Assets.Scripts.Interfaces;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
+using TMPro;
+
 
 public class Player : MonoBehaviour
 {
 
+    [Header("Money")]
     [SerializeField] IDisplayableStorer inventory;
     [SerializeField] string playerName;
+    IDisplayableBanker bank;
+
+    [Header("Movement")]
     [SerializeField, Range(1, 30)] float movementSpeed = 6;
     [SerializeField, Range(1, 30)] float sprintSpeed = 9;
     [SerializeField, Range(1, 30)] float jumpSpeed = 25;
@@ -20,6 +25,7 @@ public class Player : MonoBehaviour
     float cameraVerticleRotation = 0f;
     [SerializeField] bool isJumping = false;
     [SerializeField] bool isGrounded;
+
     private void Awake()
     {
         Inventory inventory;
@@ -33,12 +39,18 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        MovePlayer();
+    }
+
+
+    void MovePlayer()
+    {
         //only check once per update
         bool isSprinting = IsSprinting();
         isGrounded = IsGrounded();
 
         //movement inputs
-        if(Input.GetKey(KeyCode.W))
+        if (Input.GetKey(KeyCode.W))
         {
             float speed = (isSprinting ? sprintSpeed : movementSpeed);
             transform.position += transform.forward * speed * Time.deltaTime;
@@ -99,5 +111,27 @@ public class Player : MonoBehaviour
     void ResetJump()
     {
         isJumping = false;
+    }
+
+    void GetBank()
+    {
+        Component[] components = GetComponents<Component>();
+        foreach(Component comp in components)
+        {
+            if(comp is IDisplayableBanker)
+            {
+                bank = (IDisplayableBanker)comp;
+                return;
+            }
+        }
+
+        Debug.LogWarning("No bank found on player!");
+        bank = null;
+    }
+
+    private void OnValidate()
+    {
+        GetBank();
+
     }
 }

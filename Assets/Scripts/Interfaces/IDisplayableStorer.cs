@@ -9,5 +9,7 @@ namespace Assets.Scripts.Interfaces
     public interface IDisplayableStorer : IStorer
     {
         public void ToggleDisplay(bool isDisplaying);
+        public int GetRows();
+        public int GetColumns();
     }
 }

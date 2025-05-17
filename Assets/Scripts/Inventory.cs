@@ -14,14 +14,37 @@ public class Inventory : MonoBehaviour, IDisplayableStorer
     IStorable[,] inventory;
 
     [SerializeField] IDisplayable inventoryUI;
+    bool updateUI;
+    [SerializeField] bool resetInventory;
 
     public void Awake()
     {
         inventory = new IStorable[columns, rows];
-        if(inventoryUI == null)
-            inventoryUI = GetComponent<InventoryUI>();
+        if (inventoryUI == null)
+            GetUI();
     }
 
+    private void Update()
+    {
+
+        if(inventory == null)
+            inventory = new IStorable[columns, rows];
+
+        if (inventoryUI == null)
+            GetUI();
+
+        if (updateUI)
+        {
+            inventoryUI.UpdateDisplay();
+            updateUI = false;
+        }
+        
+    }
+
+    public void SetUI(IDisplayable inventoryUI)
+    {
+        this.inventoryUI = inventoryUI;
+    }
 
     public float GetItemAmount(int column, int row)
     {
@@ -40,13 +63,17 @@ public class Inventory : MonoBehaviour, IDisplayableStorer
     {
         if (inventory[column, row] != null)
         {
-            Debug.Log(item.GetType());
-            throw new System.Exception("There is already an item in this spot!");
-        }
+            IStorable storedItem = inventory[column, row];
+            //check if they are the same type of item. If so, add the amount
+            if(storedItem.GetName().Equals(item.GetName()))
+            {
+                storedItem.SetAmount(storedItem.GetAmount() + item.GetAmount());
+                return;
+            }
 
-        //make sure we have enough
-        if(amount > item.GetAmount())
-            amount = item.GetAmount();
+            //otherwise error out
+            throw new System.Exception("There is already an item in this spot! Either use an empty spot, or make sure you are adding an item with the same name!");
+        }
 
         //create the new item and set it
         IStorable newItem = item.Clone();
@@ -57,12 +84,11 @@ public class Inventory : MonoBehaviour, IDisplayableStorer
         item.SetAmount(item.GetAmount() - amount);
 
         //update the display
-        inventoryUI.UpdateDsiplay();
+        inventoryUI.UpdateDisplay();
     }
 
     public IStorable GetItem(int column, int row)
     {
-
         return inventory[column, row];
     }
 
@@ -92,7 +118,7 @@ public class Inventory : MonoBehaviour, IDisplayableStorer
 
 
         //update the display
-        inventoryUI.UpdateDsiplay();
+        inventoryUI.UpdateDisplay();
     }
 
     public int GetRows()
@@ -168,8 +194,7 @@ public class Inventory : MonoBehaviour, IDisplayableStorer
 
     void GetUI()
     {
-
-        Component[] components = gameObject.GetComponentsInChildren<Component>();
+        Component[] components = gameObject.GetComponents<Component>();
         foreach (Component component in components)
         {
             //skip inventory components
@@ -183,7 +208,8 @@ public class Inventory : MonoBehaviour, IDisplayableStorer
             }
         }
 
-        inventory = null;
+        if (inventory != null)
+            return;
         Debug.LogWarning($"Game Object \"{name}\" has an Inventory component but is missing a component of type IDisplayable!");
     }
 
@@ -206,10 +232,18 @@ public class Inventory : MonoBehaviour, IDisplayableStorer
 
     private void OnValidate()
     {
+        if (resetInventory)
+        {
+            inventory = new IStorable[columns, rows];
+            resetInventory = false;
+        }
 
-        if(inventory == null) return;
+        if (inventory == null) return;
 
-        Resize();
+        //Resize();
         GetUI();
+
+        if(inventoryUI == null) return;
+        updateUI = true;
     }
 }
