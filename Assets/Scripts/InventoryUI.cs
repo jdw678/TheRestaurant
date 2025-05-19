@@ -180,6 +180,8 @@ public class InventoryUI : MonoBehaviour, IDisplayable
 
     void GetInventory()
     {
+
+
         Component[] components = gameObject.GetComponents<Component>();
         foreach (Component component in components)
         {

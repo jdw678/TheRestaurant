@@ -8,19 +8,57 @@ using UnityEngine;
 
 namespace Assets.Scripts
 {
+    [ExecuteAlways]
     internal class SellerInventoryUI : MonoBehaviour, IDisplayable
     {
 
-        IDisplayableStorer inventory;
+        IDisplayableSeller inventory;
+        [SerializeField] GameObject container;
+        [SerializeField] GameObject backgroundPrefab;
+        bool update;
 
         public void ToggleDisplay(bool isDisplaying)
         {
-            throw new NotImplementedException();
+            container.SetActive(isDisplaying);
+        }
+
+        public void Update()
+        {
+            if(update && !Application.isPlaying)
+                UpdateDisplay();
         }
 
         public void UpdateDisplay()
         {
-            throw new NotImplementedException();
+            //delete all children
+            GameObject[] children = container.GetComponentsInChildren<GameObject>();
+            foreach (GameObject child in children)
+            {
+                if(Application.isPlaying)
+                    Destroy(child);
+                else
+                    DestroyImmediate(child);
+            }
+        }
+
+
+        void GetInventory()
+        {
+
+            var inventory = gameObject.GetComponentOfType<IDisplayableSeller>();
+            if (inventory == null)
+            {
+                Debug.LogWarning($"Game Object \"{name}\" has a SellerInventoryUI component but is missing a component of type IDisplayableSeller!");
+                return;
+            }
+
+            this.inventory = (IDisplayableSeller)inventory;
+        }
+
+        private void OnValidate()
+        {
+            GetInventory();
+            update = true;
         }
     }
 }
