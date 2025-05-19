@@ -32,7 +32,7 @@ namespace Assets.Tests.EditMode.TestClasses
             return amount;
         }
 
-        public Image GetDisplayImage()
+        public RawImage GetDisplayImage()
         {
             throw new NotImplementedException();
         }

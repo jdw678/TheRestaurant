@@ -10,7 +10,7 @@ public class InventoryUI : MonoBehaviour, IDisplayable
 {
     IDisplayableStorer inventory;
     [SerializeField] GameObject container;
-    [SerializeField] Image backgroundImage;
+    [SerializeField] RawImage backgroundImage;
     [SerializeField] int imageSize;
     [SerializeField, Range(1, 50)] int gap = 5;
     [SerializeField, Range(1, 50)] int padding = 5;
@@ -29,7 +29,7 @@ public class InventoryUI : MonoBehaviour, IDisplayable
         
     }
 
-    public void Initialize(GameObject container, Image backgroundImage, int imageSize, int gap)
+    public void Initialize(GameObject container, RawImage backgroundImage, int imageSize, int gap)
     {
         this.container = container;
         this.backgroundImage = backgroundImage;
@@ -82,7 +82,7 @@ public class InventoryUI : MonoBehaviour, IDisplayable
     void AddInventorySlot(int column, int row, float containerWidth, float containerHeight)
     {
         //initialize the background image
-        Image backgroundImg = InitializeImage(backgroundImage, container, imageSize);
+        RawImage backgroundImg = InitializeImage(backgroundImage, container, imageSize);
         RectTransform backgroundTransform = backgroundImg.GetComponent<RectTransform>();
 
         //calculate the image position
@@ -110,10 +110,10 @@ public class InventoryUI : MonoBehaviour, IDisplayable
 
     }
 
-    Image InitializeImage(Image imagePrefab, GameObject parent, float size)
+    RawImage InitializeImage(RawImage imagePrefab, GameObject parent, float size)
     {
         //instantiate a clone of imagePrefab as a child of container
-        Image img = Instantiate(imagePrefab, parent.transform);
+        RawImage img = Instantiate(imagePrefab, parent.transform);
 
         //set the anchors to 0 so that the position is calculated from the bottom left corner of the container
         RectTransform imgTransform = img.GetComponent<RectTransform>();
@@ -139,13 +139,13 @@ public class InventoryUI : MonoBehaviour, IDisplayable
             return;
 
         //get it's image
-        Image itemImg = item.GetDisplayImage();
+        RawImage itemImg = item.GetDisplayImage();
 
         if (itemImg == null)
             return;
 
         //add the image
-        Image instantiated = Instantiate(itemImg, backgroundTransform);
+        RawImage instantiated = Instantiate(itemImg, backgroundTransform);
 
         //center the image and put it infront of the background
         instantiated.transform.localPosition = new Vector3(0, 0, 1);

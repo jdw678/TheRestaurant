@@ -12,13 +12,13 @@ namespace Assets.Scripts
     [Serializable]
     internal class BasicItem : ISellableStorable
     {
-        [SerializeField] Image displayImage;
+        [SerializeField] RawImage displayImage;
         [SerializeField] string name;
         [SerializeField] float price;
         int amount;
 
 
-        BasicItem(Image displayImage, string name, float price, int amount)
+        BasicItem(RawImage displayImage, string name, float price, int amount)
         {
             this.displayImage = displayImage;
             this.name = name;
@@ -31,7 +31,7 @@ namespace Assets.Scripts
             return price;
         }
 
-        public Image GetDisplayImage()
+        public RawImage GetDisplayImage()
         {
             return displayImage;
         }
