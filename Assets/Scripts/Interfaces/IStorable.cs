@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace Assets.Scripts.Interfaces
 {
-    public interface IStorable
+    public interface IStorable : IIdentifiable
     {
         UnityEngine.UI.Image GetDisplayImage();
         float GetAmount();
         void SetAmount(float amount);
         IStorable Clone();
-        string GetName();
     }
 }
