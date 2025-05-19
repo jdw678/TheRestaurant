@@ -13,13 +13,13 @@ namespace Assets.Scripts
     {
 
         IDisplayableSeller inventory;
-        [SerializeField] GameObject container;
-        [SerializeField] GameObject backgroundPrefab;
-        bool update;
+        Inventory mockInventory;
+        InventoryUI inventoryUI;
+        [SerializeField] bool update;
 
         public void ToggleDisplay(bool isDisplaying)
         {
-            container.SetActive(isDisplaying);
+            inventoryUI.ToggleDisplay(isDisplaying);
         }
 
         public void Update()
@@ -39,6 +39,8 @@ namespace Assets.Scripts
                 else
                     DestroyImmediate(child);
             }
+
+
         }
 
 
@@ -54,6 +56,7 @@ namespace Assets.Scripts
 
             this.inventory = (IDisplayableSeller)inventory;
         }
+
 
         private void OnValidate()
         {
