@@ -65,7 +65,23 @@ namespace Assets.Scripts
         public void ResetSellableItems()
         {
             inventory = new ISellableStorable[columns, rows];
+            int i = 0;
+            for(int y = 0; y < rows; y++)
+            {
+                if (i >= basicItems.Length)
+                    break;
 
+                for (int x = 0; x < columns; x++)
+                {
+                    if (i >= basicItems.Length)
+                        break;
+
+                    inventory[x, y] = basicItems[i];
+                    i++;
+                }
+            }
+
+            inventoryUI.UpdateDisplay();
         }
 
         public float BuyItem(int column, int row, float amount)

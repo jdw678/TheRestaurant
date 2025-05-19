@@ -2,8 +2,10 @@ using Assets.Scripts.Interfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 [ExecuteAlways]
 public class InventoryUI : MonoBehaviour, IDisplayable
@@ -147,12 +149,18 @@ public class InventoryUI : MonoBehaviour, IDisplayable
         //add the image
         RawImage instantiated = Instantiate(itemImg, backgroundTransform);
 
-        //center the image and put it infront of the background
-        instantiated.transform.localPosition = new Vector3(0, 0, 1);
 
         //scale the image to the right size
         RectTransform itemTransform = instantiated.GetComponent<RectTransform>();
         itemTransform.sizeDelta = backgroundTransform.sizeDelta - new Vector2(padding, padding);
+
+        //set the pivot to 0 so that the position is calculated from the bottom left corner of the image
+        itemTransform.pivot = Vector2.zero;
+
+
+        //center the image and put it infront of the background
+        instantiated.transform.localPosition = new Vector3(0, 0, 1) + new Vector3(padding / 2, padding / 2, 0);
+
     }
 
     void ResetContainer(float width, float height)
@@ -166,7 +174,8 @@ public class InventoryUI : MonoBehaviour, IDisplayable
         Transform[] children = container.GetComponentsInChildren<Transform>();
         for (int i = 0; i < children.Length; i++)
         {
-            if (children[i].gameObject.Equals(container))
+
+            if (children[i] == null || children[i].gameObject.Equals(container))
                 continue;
 
             if(Application.isPlaying)
