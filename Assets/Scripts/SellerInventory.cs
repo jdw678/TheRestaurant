@@ -107,6 +107,7 @@ namespace Assets.Scripts
                 if(component is IDisplayable)
                 {
                     inventoryUI = (IDisplayable)component;
+                    return;
                 }
             }
 
