@@ -6,10 +6,7 @@ using System.Threading.Tasks;
 
 namespace Assets.Scripts.Interfaces
 {
-    public interface IDisplayableSeller : ISeller
+    public interface IDisplayableSeller : ISeller, IDisplayableStorer
     {
-        void ToggleDisplay(bool isDisplaying);
-        int GetRows();
-        int GetColumns();
     }
 }

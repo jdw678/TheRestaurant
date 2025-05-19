@@ -19,7 +19,7 @@ namespace Assets.Scripts
 
         public void ToggleDisplay(bool isDisplaying)
         {
-            inventoryUI.ToggleDisplay(isDisplaying);
+            inventory.ToggleDisplay(isDisplaying);
         }
 
         public void Update()
@@ -30,15 +30,6 @@ namespace Assets.Scripts
 
         public void UpdateDisplay()
         {
-            //delete all children
-            GameObject[] children = container.GetComponentsInChildren<GameObject>();
-            foreach (GameObject child in children)
-            {
-                if(Application.isPlaying)
-                    Destroy(child);
-                else
-                    DestroyImmediate(child);
-            }
 
 
         }

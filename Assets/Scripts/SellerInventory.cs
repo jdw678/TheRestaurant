@@ -8,16 +8,37 @@ using UnityEngine;
 
 namespace Assets.Scripts
 {
+    [ExecuteAlways]
     public class SellerInventory : MonoBehaviour, IDisplayableSeller
     {
         [SerializeField, Range(1, 20)] int columns = 1;
         [SerializeField, Range(1, 20)] int rows = 1;
+        [SerializeField] bool resetInventory;
+        bool updateDisplay;
         ISellableStorable[,] inventory;
         IDisplayable inventoryUI;
+        [SerializeField] BasicItem[] basicItems;
 
         public void Awake()
         {
             ResetSellableItems();
+        }
+
+        public void Update()
+        {
+
+            if (resetInventory)
+            {
+                ResetSellableItems();
+                resetInventory = false;
+
+            }
+
+            if(updateDisplay)
+            {
+                inventoryUI.UpdateDisplay();
+                updateDisplay = false;
+            }
         }
 
         bool IsInRange(int column, int row)
@@ -96,6 +117,28 @@ namespace Assets.Scripts
             return columns;
         }
 
+
+        public void AddItem(IStorable item, float amount, int column, int row)
+        {
+            if (!(item is ISellableStorable))
+                throw new Exception($"Trying to add item {item} to SellerInventory {this} but the item is not of type ISellableStorable!");
+
+            AddSellableItem((ISellableStorable)item, column, row);
+        }
+
+        public void RemoveItem(int column, int row, float amount)
+        {
+            inventory[column, row] = null;
+        }
+
+        IStorable IStorer.GetItem(int column, int row)
+        {
+            if(inventory == null)
+                return null;
+            return inventory[column, row];
+        }
+
+
         void GetUI()
         {
             Component[] components = GetComponents<Component>();
@@ -104,7 +147,7 @@ namespace Assets.Scripts
                 if (component is IDisplayableSeller)
                     continue;
 
-                if(component is IDisplayable)
+                if (component is IDisplayable)
                 {
                     inventoryUI = (IDisplayable)component;
                     return;
@@ -118,6 +161,11 @@ namespace Assets.Scripts
         private void OnValidate()
         {
             GetUI();
+
+            if (inventory == null || columns != inventory.GetLength(0) || rows != inventory.GetLength(1))
+                resetInventory = true;
+
+            updateDisplay = true;
         }
     }
 }
