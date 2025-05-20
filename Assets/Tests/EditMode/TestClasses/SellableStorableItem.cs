@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Assets.Tests.EditMode.TestClasses
@@ -32,7 +33,7 @@ namespace Assets.Tests.EditMode.TestClasses
             return amount;
         }
 
-        public RawImage GetDisplayImage()
+        public GameObject GetDisplayImage()
         {
             throw new NotImplementedException();
         }

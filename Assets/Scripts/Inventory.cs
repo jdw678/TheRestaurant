@@ -208,8 +208,9 @@ public class Inventory : MonoBehaviour, IDisplayableStorer
             }
         }
 
-        if (inventory != null)
+        if (inventoryUI != null)
             return;
+
         Debug.LogWarning($"Game Object \"{name}\" has an Inventory component but is missing a component of type IDisplayable!");
     }
 

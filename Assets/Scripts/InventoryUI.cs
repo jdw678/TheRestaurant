@@ -12,7 +12,7 @@ public class InventoryUI : MonoBehaviour, IDisplayable
 {
     IDisplayableStorer inventory;
     [SerializeField] GameObject container;
-    [SerializeField] RawImage backgroundImage;
+    [SerializeField] GameObject backgroundImage;
     [SerializeField] int imageSize;
     [SerializeField, Range(1, 50)] int gap = 5;
     [SerializeField, Range(1, 50)] int padding = 5;
@@ -31,7 +31,7 @@ public class InventoryUI : MonoBehaviour, IDisplayable
         
     }
 
-    public void Initialize(GameObject container, RawImage backgroundImage, int imageSize, int gap)
+    public void Initialize(GameObject container, GameObject backgroundImage, int imageSize, int gap)
     {
         this.container = container;
         this.backgroundImage = backgroundImage;
@@ -84,7 +84,7 @@ public class InventoryUI : MonoBehaviour, IDisplayable
     void AddInventorySlot(int column, int row, float containerWidth, float containerHeight)
     {
         //initialize the background image
-        RawImage backgroundImg = InitializeImage(backgroundImage, container, imageSize);
+        GameObject backgroundImg = InitializeImage(backgroundImage, container, imageSize);
         RectTransform backgroundTransform = backgroundImg.GetComponent<RectTransform>();
 
         //calculate the image position
@@ -112,10 +112,10 @@ public class InventoryUI : MonoBehaviour, IDisplayable
 
     }
 
-    RawImage InitializeImage(RawImage imagePrefab, GameObject parent, float size)
+    GameObject InitializeImage(GameObject imagePrefab, GameObject parent, float size)
     {
         //instantiate a clone of imagePrefab as a child of container
-        RawImage img = Instantiate(imagePrefab, parent.transform);
+        GameObject img = Instantiate(imagePrefab, parent.transform);
 
         //set the anchors to 0 so that the position is calculated from the bottom left corner of the container
         RectTransform imgTransform = img.GetComponent<RectTransform>();
@@ -141,13 +141,13 @@ public class InventoryUI : MonoBehaviour, IDisplayable
             return;
 
         //get it's image
-        RawImage itemImg = item.GetDisplayImage();
+        GameObject itemImg = item.GetDisplayImage();
 
         if (itemImg == null)
             return;
 
         //add the image
-        RawImage instantiated = Instantiate(itemImg, backgroundTransform);
+        GameObject instantiated = Instantiate(itemImg, backgroundTransform);
 
 
         //scale the image to the right size

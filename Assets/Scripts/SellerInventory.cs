@@ -17,10 +17,12 @@ namespace Assets.Scripts
         bool updateDisplay;
         ISellableStorable[,] inventory;
         IDisplayable inventoryUI;
-        [SerializeField] BasicItem[] basicItems;
+        [SerializeField] BasicItem[] basicItems = new BasicItem[0];
 
-        public void Awake()
+
+        public void Start()
         {
+            GetUI();
             ResetSellableItems();
         }
 
@@ -45,11 +47,16 @@ namespace Assets.Scripts
         {
             return column < columns && row < rows;
         }
-
         bool IsNull(int column, int row)
         {
             return inventory[column, row] == null;
         }
+
+        public void SetUI(IDisplayable inventoryUI)
+        {
+            this.inventoryUI = inventoryUI;
+        }
+
 
         public void AddSellableItem(ISellableStorable item, int column, int row)
         {
@@ -81,7 +88,8 @@ namespace Assets.Scripts
                 }
             }
 
-            inventoryUI.UpdateDisplay();
+            if(inventoryUI != null)
+                inventoryUI.UpdateDisplay();
         }
 
         public float BuyItem(int column, int row, float amount)
@@ -180,6 +188,8 @@ namespace Assets.Scripts
 
             if (inventory == null || columns != inventory.GetLength(0) || rows != inventory.GetLength(1))
                 resetInventory = true;
+
+            if (inventory == null) return;
 
             updateDisplay = true;
         }

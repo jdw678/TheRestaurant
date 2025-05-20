@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-internal class SellerInventoryTests
+public class SellerInventoryTests
 {
        
 
@@ -25,8 +25,9 @@ internal class SellerInventoryTests
         gameObject.AddComponent(typeof(SellerInventory));
 
         SellerInventory inventory = gameObject.GetComponent<SellerInventory>();
+        inventory.SetUI(new EmptyDisplayable());
 
-        inventory.Awake();
+        inventory.Start();
         inventory.AddSellableItem(item, 0, 0);
 
         //check the state is set correctly

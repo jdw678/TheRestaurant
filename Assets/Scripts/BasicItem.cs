@@ -12,15 +12,17 @@ namespace Assets.Scripts
     [Serializable]
     internal class BasicItem : ISellableStorable
     {
-        [SerializeField] RawImage displayImage;
+        [SerializeField] GameObject displayPrefab;
+        [SerializeField] Texture2D image;
         [SerializeField] string name;
         [SerializeField] float price;
         int amount;
 
 
-        BasicItem(RawImage displayImage, string name, float price, int amount)
+        BasicItem(GameObject displayPrefab, Texture2D image, string name, float price, int amount)
         {
-            this.displayImage = displayImage;
+            this.displayPrefab = displayPrefab;
+            this.image = image; 
             this.name = name;
             this.price = price;
             this.amount = amount;
@@ -31,9 +33,10 @@ namespace Assets.Scripts
             return price;
         }
 
-        public RawImage GetDisplayImage()
+        public GameObject GetDisplayImage()
         {
-            return displayImage;
+            displayPrefab.GetComponent<RawImage>().texture = image;
+            return displayPrefab;
         }
 
         public float GetAmount()
@@ -48,12 +51,14 @@ namespace Assets.Scripts
 
         public IStorable Clone()
         {
-            return new BasicItem(displayImage, name, price, amount);
+            return new BasicItem(displayPrefab, image, name, price, amount);
         }
 
         public string GetName()
         {
             return name;
         }
+
+
     }
 }
