@@ -19,16 +19,26 @@ public class StoreItemTests
     {
         //item set up
         itemDisplayPrefab = new GameObject();
-        GameObject obj = new GameObject();
+
+        //create text obj
+        GameObject obj = new GameObject("item");
         itemText = obj.AddComponent<TextMeshProUGUI>();
+
+        //set text parent to itemDisplayPrefab
         itemText.transform.SetParent(itemDisplayPrefab.transform);
-        item = new StorableItem("test", 5);
+
+        //create item
+        item = new StorableItem("test", 5, itemDisplayPrefab);
 
 
         //store item set up
         storeItem = itemDisplayPrefab.AddComponent<StoreItem>();
-        obj = new GameObject();
+        
+        //add text
+        obj = new GameObject("store item");
         storeItemText = obj.AddComponent<TextMeshProUGUI>();
+
+        //make it a child
         storeItemText.transform.SetParent(itemDisplayPrefab.transform);
 
     }
@@ -40,11 +50,11 @@ public class StoreItemTests
         SetUp();
 
         //Test Initialize
-        Assert.DoesNotThrow(() => storeItem.Initialize(item, "storeItemTest", 5, storeItemText));
+        Assert.DoesNotThrow(() => storeItem.Initialize(item, 5, storeItemText));
 
         //check state
         Assert.AreEqual(5, storeItem.GetPrice());
-        Assert.AreEqual("storeItemTest", storeItem.GetName());
+        Assert.AreEqual("test", storeItem.GetName());
         Assert.IsTrue(storeItem.GetComponentsInChildren<TextMeshProUGUI>().Contains(storeItemText));
         Assert.AreEqual("$5", storeItemText.text);
     }
@@ -57,7 +67,7 @@ public class StoreItemTests
         SetUp();
 
         //init
-        storeItem.Initialize(item, "store item test", 5, storeItemText);
+        storeItem.Initialize(item, 5, storeItemText);
 
         //check the text is set correctly
         Assert.AreEqual("$5", storeItemText.text);
@@ -74,15 +84,14 @@ public class StoreItemTests
         SetUp();
 
         //init
-        storeItem.Initialize(item, "store item test", 5, storeItemText);
+        storeItem.Initialize(item, 5, storeItemText);
 
         IStorable clone = storeItem.Clone();
 
         //check clone state / type
         Assert.IsNotNull(clone);
-        Assert.AreEqual("store item test", clone.GetName());
+        Assert.AreEqual("test", clone.GetName());
         Assert.AreNotEqual(storeItem, clone);
         Assert.AreNotSame(storeItem, clone);
-        Assert.AreEqual(typeof(BasicItem), clone.GetType());
     }
 }

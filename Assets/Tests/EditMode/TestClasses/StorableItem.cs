@@ -13,17 +13,25 @@ namespace Assets.Tests.TestClasses
     {
         string name = "Test item";
         float amount;
-
+        GameObject gameObject;
 
         public StorableItem(string name, float amount)
         {
             this.name = name;
             this.amount = amount;
+            gameObject = new GameObject();
+        }
+
+        public StorableItem(string name, float amount, GameObject gameObject)
+        {
+            this.name = name;
+            this.amount = amount;
+            this.gameObject = gameObject;
         }
 
         public IStorable Clone()
         {
-            return new StorableItem("Test item", amount);
+            return new StorableItem(name, amount);
         }
 
         public float GetAmount()
@@ -33,7 +41,7 @@ namespace Assets.Tests.TestClasses
 
         public GameObject GetDisplayImage()
         {
-            throw new NotImplementedException();
+            return gameObject;
         }
 
         public string GetName()
