@@ -9,7 +9,7 @@ using UnityEngine;
 namespace Assets.Scripts
 {
     [ExecuteAlways]
-    public class SellerInventory : MonoBehaviour, IDisplayable
+    public class SellerInventory : MonoBehaviour, IDisplayable, ISelector<ISellableStorable>
     {
         IDisplayableStorer inventory;
         ISellableStorable[,] items;

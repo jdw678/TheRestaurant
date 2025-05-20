@@ -9,11 +9,11 @@ using UnityEngine.UI;
 
 namespace Assets.Scripts
 {
-    public class GroceryStore : MonoBehaviour, IDisplayable
+    public class Store : MonoBehaviour, IDisplayable
     {
-        [SerializeField] SellerInventory inventory;
+        [SerializeField] ISelector<ISellableStorable> inventory;
         [SerializeField] Button buyButton;
-        public float BuyItem(int column, int row, float amount)
+        public ISellableStorable BuyItem(IDisplayableBanker playerBank)
         {
             throw new NotImplementedException();
         }
@@ -26,6 +26,11 @@ namespace Assets.Scripts
         public void UpdateDisplay()
         {
             throw new NotImplementedException();
+        }
+
+        public void Initialize()
+        {
+
         }
     }
 }
