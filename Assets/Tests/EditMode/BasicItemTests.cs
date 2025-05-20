@@ -15,8 +15,9 @@ public class BasicItemTests
     public void SetUp()
     {
         displayPrefab = new GameObject();
-        text = new TextMeshProUGUI();
-        text.transform.parent = displayPrefab.transform;
+        GameObject obj = new GameObject();
+        text = obj.AddComponent<TextMeshProUGUI>();
+        text.transform.SetParent(displayPrefab.transform);
         item = displayPrefab.AddComponent<BasicItem>();
 
     }
@@ -29,7 +30,7 @@ public class BasicItemTests
         SetUp();
 
         //test initialize doesnt error
-        Assert.DoesNotThrow(() => item.Initialize(text, 3, displayPrefab));
+        Assert.DoesNotThrow(() => item.Initialize(text, 3, displayPrefab, "test"));
 
         //test state
         Assert.AreEqual(displayPrefab, item.GetDisplayImage());
@@ -45,12 +46,12 @@ public class BasicItemTests
         SetUp();
 
         //test text is set up correctly on initialize
-        item.Initialize(text, 3, displayPrefab);
-        Assert.AreEqual("3", text.text);
+        item.Initialize(text, 3, displayPrefab, "test");
+        Assert.AreEqual("3.0", text.text);
 
         //test text updates after changing the amount
         item.SetAmount(5);
-        Assert.AreEqual("5", text.text);
+        Assert.AreEqual("5.0", text.text);
 
     }
 }

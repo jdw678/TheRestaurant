@@ -15,6 +15,7 @@ namespace Assets.Scripts
         [SerializeField] TextMeshProUGUI text;
         [SerializeField] float amount;
         [SerializeField] GameObject displayPrefab;
+        [SerializeField] string itemName;
 
         public IStorable Clone()
         {
@@ -23,32 +24,51 @@ namespace Assets.Scripts
 
         public float GetAmount()
         {
-            throw new NotImplementedException();
+            return amount;
         }
 
         public GameObject GetDisplayImage()
         {
-            throw new NotImplementedException();
+            return displayPrefab;
         }
 
         public string GetName()
         {
-            throw new NotImplementedException();
+            return itemName;
         }
 
         public void SetAmount(float amount)
         {
-            throw new NotImplementedException();
+            this.amount = amount;
+            UpdateText(amount);
         }
 
         void UpdateText(float amount)
         {
-            throw new NotImplementedException();
+            //get the text object
+            if (text == null)
+                text = gameObject.GetComponentInChildren<TextMeshProUGUI>();
+
+            //if no text object add one
+            if(text == null)
+            {
+                GameObject obj = new GameObject("Text");
+                text = obj.AddComponent<TextMeshProUGUI>();
+                text.transform.SetParent(transform);
+            }
+
+            //set the text
+            text.text = $"{amount:n1}";
         }
 
-        public void Initialize(TextMeshProUGUI text, float amount, GameObject displayPrefab)
+        public void Initialize(TextMeshProUGUI text, float amount, GameObject displayPrefab, string itemName)
         {
-            throw new NotImplementedException();
+            this.text = text;
+            this.amount = amount;
+            this.displayPrefab = displayPrefab;
+            this.itemName = itemName;
+
+            this.text.text = $"{amount:n1}";
         }
     }
 }
