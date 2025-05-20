@@ -13,15 +13,13 @@ namespace Assets.Tests.EditMode.TestClasses
         IStorable[,] items;
         public bool displaying;
 
-        public void Initialize(int columns, int rows)
+        public DisplayableStorer(int columns, int rows)
         {
             items = new IStorable[columns, rows];
         }
+
         bool IsOutsideOfItemsRange(int column, int row)
         {
-            if (IsOutsideOfItemsRange(column, row))
-                throw new IndexOutOfRangeException();
-
             return column >= GetColumns() || row >= GetColumns();
                 
         }

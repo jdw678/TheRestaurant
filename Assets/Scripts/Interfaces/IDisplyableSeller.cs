@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Assets.Scripts.Interfaces
 {
-    public interface IDisplayableSeller : ISeller, IDisplayableStorer
+    public interface IDisplayableSeller : ISeller, IDisplayable
     {
     }
 }

@@ -9,175 +9,60 @@ using UnityEngine;
 namespace Assets.Scripts
 {
     [ExecuteAlways]
-    public class SellerInventory : MonoBehaviour, IDisplayableSeller
+    public class SellerInventory : MonoBehaviour, IDisplayable
     {
-        [SerializeField, Range(1, 20)] int columns = 1;
-        [SerializeField, Range(1, 20)] int rows = 1;
-        [SerializeField] bool resetInventory;
-        bool updateDisplay;
-        ISellableStorable[,] inventory;
-        IDisplayable inventoryUI;
+        IDisplayableStorer inventory;
+        ISellableStorable[,] items;
+        ISellableStorable selectedItem;
 
 
-        public void Start()
+        public void SelectItem(int column, int row)
         {
-            GetUI();
-            ResetSellableItems();
+            if (items[column, row] == null)
+                return;
+
+            selectedItem = items[column, row];
         }
 
-        public void Update()
+        public ISellableStorable GetSelectedItem()
         {
+            return selectedItem;
+        }
 
-            if (resetInventory)
+        public void Initialize(IDisplayableStorer inventory, ISellableStorable[,] items)
+        {
+            //initialize the inventory for displaying
+            int columns = items.GetLength(0);
+            int rows = items.GetLength(1);
+
+            if (columns > inventory.GetColumns() || rows > inventory.GetRows())
+                throw new Exception("Inventory does not have enough space!");
+
+            for(int x = 0; x < columns; x++)
             {
-                ResetSellableItems();
-                resetInventory = false;
+                for(int y = 0; y < rows; y++)
+                {
+                    if (items[x, y] == null)
+                        continue;
 
+                    inventory.AddItem(items[x, y], 1, x, y);
+                }
             }
 
-            if(updateDisplay)
-            {
-                inventoryUI.UpdateDisplay();
-                updateDisplay = false;
-            }
-        }
-
-        bool IsInRange(int column, int row)
-        {
-            return column < columns && row < rows;
-        }
-        bool IsNull(int column, int row)
-        {
-            return inventory[column, row] == null;
-        }
-
-        public void SetUI(IDisplayable inventoryUI)
-        {
-            this.inventoryUI = inventoryUI;
-        }
-
-
-        public void AddSellableItem(ISellableStorable item, int column, int row)
-        {
-            if(!IsInRange(column, row))
-                throw new IndexOutOfRangeException();
-
-            if (!IsNull(column, row))
-                throw new Exception($"Item already listed at column: {column}, row: {row}");
-
-            inventory[column, row] = item;
-        }
-
-        public void ResetSellableItems()
-        {
-            inventory = new ISellableStorable[columns, rows];
-            
-
-            if(inventoryUI != null)
-                inventoryUI.UpdateDisplay();
-        }
-
-        public float BuyItem(int column, int row, float amount)
-        {
-            if (!IsInRange(column, row))
-                throw new IndexOutOfRangeException();
-
-            if (IsNull(column, row))
-                throw new Exception($"No item listed at column: {column}, row: {row}");
-
-            return inventory[column, row].GetPrice() * amount;
-            
-        }
-
-        public ISellable GetItem(int column, int row)
-        {
-            if (!IsInRange(column, row))
-                throw new IndexOutOfRangeException();
-
-            if (IsNull(column, row))
-                throw new Exception($"No item listed at column: {column}, row: {row}");
-
-            return inventory[column, row];
-        }
-
-
-        public float GetItemAmount(int column, int row)
-        {
-            if (!IsInRange(column, row))
-                throw new IndexOutOfRangeException();
-
-            if (IsNull(column, row))
-                throw new Exception($"No item listed at column: {column}, row: {row}");
-
-            return inventory[column, row].GetAmount();
+            this.inventory = inventory;
+            this.items = items;
         }
 
         public void ToggleDisplay(bool isDisplaying)
         {
-            inventoryUI.ToggleDisplay(isDisplaying);
+            inventory.ToggleDisplay(isDisplaying);
         }
 
-        public int GetRows()
+        public void UpdateDisplay()
         {
-            return rows;
-        }
 
-        public int GetColumns()
-        {
-            return columns;
-        }
-
-
-        public void AddItem(IStorable item, float amount, int column, int row)
-        {
-            if (!(item is ISellableStorable))
-                throw new Exception($"Trying to add item {item} to SellerInventory {this} but the item is not of type ISellableStorable!");
-
-            AddSellableItem((ISellableStorable)item, column, row);
-        }
-
-        public void RemoveItem(int column, int row, float amount)
-        {
-            inventory[column, row] = null;
-        }
-
-        IStorable IStorer.GetItem(int column, int row)
-        {
-            if(inventory == null)
-                return null;
-            return inventory[column, row];
-        }
-
-
-        void GetUI()
-        {
-            Component[] components = GetComponents<Component>();
-            foreach (Component component in components)
-            {
-                if (component is IDisplayableSeller)
-                    continue;
-
-                if (component is IDisplayable)
-                {
-                    inventoryUI = (IDisplayable)component;
-                    return;
-                }
-            }
-
-
-            Debug.LogWarning($"Game Object \"{name}\" has a SellerInventory component but is missing a component of type IDisplayable!");
-        }
-
-        private void OnValidate()
-        {
-            GetUI();
-
-            if (inventory == null || columns != inventory.GetLength(0) || rows != inventory.GetLength(1))
-                resetInventory = true;
-
-            if (inventory == null) return;
-
-            updateDisplay = true;
+            //reset the display
+            Initialize(inventory, items);
         }
     }
 }
