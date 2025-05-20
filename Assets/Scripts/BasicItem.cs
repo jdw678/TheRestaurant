@@ -58,7 +58,7 @@ namespace Assets.Scripts
             }
 
             //set the text
-            text.text = $"{amount:n1}";
+            text.text = $"{amount:n0}";
         }
 
         public void Initialize(TextMeshProUGUI text, float amount, GameObject displayPrefab, string itemName)
@@ -68,7 +68,7 @@ namespace Assets.Scripts
             this.displayPrefab = displayPrefab;
             this.itemName = itemName;
 
-            this.text.text = $"{amount:n1}";
+            this.text.text = $"{amount:n0}";
         }
     }
 }
