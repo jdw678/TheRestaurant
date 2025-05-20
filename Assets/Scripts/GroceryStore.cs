@@ -10,11 +10,6 @@ namespace Assets.Scripts
 {
     internal class GroceryStore : MonoBehaviour
     {
-        IDisplayableStorer inventory;
 
-        public void BuyItem(int row, int column)
-        {
-            
-        }
     }
 }
