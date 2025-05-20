@@ -13,7 +13,7 @@ namespace Assets.Scripts
     {
         [SerializeField] ISelector<ISellableStorable> inventory;
         [SerializeField] Button buyButton;
-        public ISellableStorable BuyItem(IDisplayableBanker playerBank)
+        public ISellableStorable BuyItem(IBanker playerBank)
         {
             throw new NotImplementedException();
         }
@@ -28,7 +28,7 @@ namespace Assets.Scripts
             throw new NotImplementedException();
         }
 
-        public void Initialize()
+        public void Initialize(ISelector<ISellableStorable> inventory, Button buyButton)
         {
 
         }
