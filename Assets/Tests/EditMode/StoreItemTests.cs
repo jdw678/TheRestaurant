@@ -4,6 +4,7 @@ using UnityEngine;
 using NUnit.Framework;
 using Assets.Tests.TestClasses;
 using System.Linq;
+using Assets.Scripts.Interfaces;
 
 public class StoreItemTests
 {
@@ -63,5 +64,25 @@ public class StoreItemTests
 
         //check that the regular text is disabled
         Assert.IsFalse(itemText.IsActive());
+    }
+
+    [Test]
+    public void CloneItemTest()
+    {
+
+        //reset all the objects
+        SetUp();
+
+        //init
+        storeItem.Initialize(item, "store item test", 5, storeItemText);
+
+        IStorable clone = storeItem.Clone();
+
+        //check clone state / type
+        Assert.IsNotNull(clone);
+        Assert.AreEqual("store item test", clone.GetName());
+        Assert.AreNotEqual(storeItem, clone);
+        Assert.AreNotSame(storeItem, clone);
+        Assert.AreEqual(typeof(BasicItem), clone.GetType());
     }
 }

@@ -1,4 +1,5 @@
 using Assets.Scripts;
+using Assets.Scripts.Interfaces;
 using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
@@ -49,11 +50,32 @@ public class BasicItemTests
 
         //test text is set up correctly on initialize
         item.Initialize(text, 3, displayPrefab, "test");
-        Assert.AreEqual("3.0", text.text);
+        Assert.AreEqual("3", text.text);
 
         //test text updates after changing the amount
         item.SetAmount(5);
-        Assert.AreEqual("5.0", text.text);
+        Assert.AreEqual("5", text.text);
 
+    }
+
+    [Test]
+    public void CloneItemTest()
+    {
+        //reset objects
+        SetUp();
+
+        //test text is set up correctly on initialize
+        item.Initialize(text, 3, displayPrefab, "test");
+
+        //clone
+        IStorable clone = item.Clone();
+
+        //check state / type
+        Assert.IsNotNull(clone);
+        Assert.AreNotSame(item, clone);
+        Assert.AreEqual("test", clone.GetName());
+        Assert.AreEqual("3", clone.GetDisplayImage().GetComponentInChildren<TextMeshProUGUI>().text);
+        Assert.AreNotSame(displayPrefab, clone.GetDisplayImage());
+        Assert.AreEqual(3, clone.GetAmount());
     }
 }
