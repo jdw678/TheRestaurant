@@ -2,6 +2,7 @@ using Assets.Scripts;
 using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -35,6 +36,7 @@ public class BasicItemTests
         //test state
         Assert.AreEqual(displayPrefab, item.GetDisplayImage());
         Assert.AreEqual(3, item.GetAmount());
+        Assert.IsTrue(displayPrefab.GetComponentsInChildren<TextMeshProUGUI>().Contains(text));
 
     }
 

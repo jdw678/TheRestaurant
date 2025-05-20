@@ -441,7 +441,7 @@
         <mxCell id="aja5S025rSG3QBIZw7f6-16" value="- DisableItemText(IStorable item) : void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="aja5S025rSG3QBIZw7f6-6">
           <mxGeometry y="158" width="230" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="aja5S025rSG3QBIZw7f6-21" value="+ Initialize(TextMeshProUGUI text, float amount, GameObject displayPrefab) : void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="aja5S025rSG3QBIZw7f6-6">
+        <mxCell id="aja5S025rSG3QBIZw7f6-21" value="+ Initialize(IStorable item, float price, TextMeshProUGUI text) : void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="aja5S025rSG3QBIZw7f6-6">
           <mxGeometry y="188" width="230" height="42" as="geometry" />
         </mxCell>
         <mxCell id="aja5S025rSG3QBIZw7f6-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;" edge="1" parent="1" source="aja5S025rSG3QBIZw7f6-6" target="2UsgkP_STszKTiXuxc6y-51">
