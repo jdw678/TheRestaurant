@@ -18,7 +18,7 @@ namespace Assets.Scripts
 
         public static Component GetComponentOfType<T>(this GameObject obj)
         {
-            var component = obj.GetComponents<Component>().First(x => x is T);
+            var component = obj.GetComponents<Component>().FirstOrDefault(x => x is T);
             return component;
         }
 

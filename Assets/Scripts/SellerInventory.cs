@@ -17,7 +17,6 @@ namespace Assets.Scripts
         bool updateDisplay;
         ISellableStorable[,] inventory;
         IDisplayable inventoryUI;
-        [SerializeField] BasicItem[] basicItems = new BasicItem[0];
 
 
         public void Start()
@@ -72,21 +71,7 @@ namespace Assets.Scripts
         public void ResetSellableItems()
         {
             inventory = new ISellableStorable[columns, rows];
-            int i = 0;
-            for(int y = 0; y < rows; y++)
-            {
-                if (i >= basicItems.Length)
-                    break;
-
-                for (int x = 0; x < columns; x++)
-                {
-                    if (i >= basicItems.Length)
-                        break;
-
-                    inventory[x, y] = basicItems[i];
-                    i++;
-                }
-            }
+            
 
             if(inventoryUI != null)
                 inventoryUI.UpdateDisplay();
@@ -114,6 +99,7 @@ namespace Assets.Scripts
 
             return inventory[column, row];
         }
+
 
         public float GetItemAmount(int column, int row)
         {
